@@ -34,7 +34,14 @@ class Dashboard extends Component {
     focused: null
   };
 
+  selectPanel(id) {
+    this.setState((previousState) => ({
+      focused: previousState.focused !== null ? null : id,
+    }));
+  }
+  
   render() {
+
     const dashboardClasses = classnames("dashboard", {
       "dashboard--focused": this.state.focused
     });
@@ -42,18 +49,20 @@ class Dashboard extends Component {
     if (this.state.loading) {
       return <Loading />
     }
+    
     //checks if focused is null then returns true for every panel.
-    const createPanels = (this.state.focused ? data.filter(panel => this.state.focused === panel.id) : data)
+    //else If this.state.focused is equal to the Panel, then let it through the filter.
+    const panels = (this.state.focused ? data.filter(panel => this.state.focused === panel.id) : data)
       .map(panel => (
       <Panel 
         key={panel.id}
-        id={panel.id}
         label={panel.label}
         value={panel.value}
+        onSelect={event => this.selectPanel(panel.id)}
       />
     ));
 
-    return <main className={dashboardClasses}>{createPanels}</main>;
+    return <main className={dashboardClasses}>{panels}</main>;
   }
 }
 
